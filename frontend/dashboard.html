@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — PII Anonymization System</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+#vanta-bg { position:fixed; inset:0; z-index:0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #050d1a;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(820px, 95vw);
+  min-height: 440px;
+  background: rgba(10,20,45,0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(59,130,246,0.2), 0 20px 60px rgba(0,0,0,0.5);
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(28px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Left panel ── */
+.left-panel {
+  width: 42%;
+  background: linear-gradient(160deg, #0f2855 0%, #0d1f4a 60%, #120d33 100%);
+  border-right: 1px solid rgba(59,130,246,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 28px;
+  text-align: center;
+}
+
+.left-panel .icon { font-size:3rem; margin-bottom:14px; filter:drop-shadow(0 0 12px rgba(59,130,246,0.7)); }
+.left-panel h1 { color:#f0f4ff; font-size:1.4rem; font-weight:700; margin-bottom:10px; }
+.left-panel p  { color:#93c5fd; font-size:0.85rem; line-height:1.6; }
+
+/* ── Right panel ── */
+.right-panel {
+  width: 58%;
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right-panel h2 { color:#f0f4ff; font-size:1.25rem; font-weight:700; margin-bottom:6px; }
+.right-panel .sub { color:#64748b; font-size:0.83rem; margin-bottom:28px; }
+
+/* ── Menu buttons ── */
+.menu { display:flex; flex-direction:column; gap:12px; margin-bottom:22px; }
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 12px;
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.menu a:hover {
+  background: rgba(59,130,246,0.14);
+  border-color: #3b82f6;
+  transform: translateX(5px);
+}
+
+.menu a .ico { font-size:1.2rem; }
+.menu a .arr { margin-left:auto; opacity:0.4; transition:opacity 0.2s, transform 0.2s; }
+.menu a:hover .arr { opacity:1; transform:translateX(3px); }
+
+.logout {
+  color:#475569; font-size:0.82rem;
+  text-decoration:none; display:inline-flex; align-items:center; gap:5px;
+  transition:color 0.2s;
+}
+.logout:hover { color:#ef4444; }
+</style>
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+
+<!-- hrefs UNCHANGED -->
+<div class="container">
+  <div class="left-panel">
+    <div class="icon">🔏</div>
+    <h1>PII Anonymization System</h1>
+    <p>Manage your personal data securely using anonymization features</p>
+  </div>
+
+  <div class="right-panel">
+    <h2>Welcome</h2>
+    <p class="sub">Select an action to continue</p>
+
+    <div class="menu">
+      <a href="http://127.0.0.1:5000/data-form">
+        <span class="ico">📋</span> Submit Personal Data <span class="arr">›</span>
+      </a>
+      <a href="http://127.0.0.1:5000/text-form">
+        <span class="ico">✏️</span> Text Anonymization <span class="arr">›</span>
+      </a>
+      <a href="http://127.0.0.1:5000/view-data">
+        <span class="ico">🗄️</span> View Stored Data <span class="arr">›</span>
+      </a>
+    </div>
+
+    <a href="http://127.0.0.1:5000/" class="logout">⬅ Logout</a>
+  </div>
+</div>
+
+<script>
+VANTA.NET({
+  el: "#vanta-bg",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.00,
+  scaleMobile: 1.00,
+  color: 0x3b82f6,
+  backgroundColor: 0x050d1a,
+  points: 10.00,
+  maxDistance: 22.00,
+  spacing: 18.00
+});
+</script>
+</body>
+</html>

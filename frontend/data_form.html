@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Data — PII Anonymization System</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+#vanta-bg { position:fixed; inset:0; z-index:0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #050d1a;
+  padding: 20px;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(820px, 95vw);
+  min-height: 480px;
+  background: rgba(10,20,45,0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(59,130,246,0.2), 0 20px 60px rgba(0,0,0,0.5);
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(28px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.left-panel {
+  width: 40%;
+  background: linear-gradient(160deg, #0f2855, #0d1f4a 60%, #120d33);
+  border-right: 1px solid rgba(59,130,246,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.left-panel .icon { font-size:3rem; margin-bottom:14px; filter:drop-shadow(0 0 12px rgba(59,130,246,0.7)); }
+.left-panel h1 { color:#f0f4ff; font-size:1.3rem; font-weight:700; margin-bottom:10px; }
+.left-panel p  { color:#93c5fd; font-size:0.83rem; line-height:1.6; }
+
+.right-panel {
+  width: 60%;
+  padding: 36px 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.right-panel h2 { color:#f0f4ff; font-size:1.2rem; font-weight:700; margin-bottom:4px; }
+.right-panel .sub { color:#64748b; font-size:0.82rem; margin-bottom:20px; }
+
+label {
+  display:block; font-size:0.72rem; font-weight:600;
+  color:#94a3b8; text-transform:uppercase;
+  letter-spacing:0.05em; margin-bottom:4px; margin-top:12px;
+}
+
+input {
+  width:100%; padding:10px 14px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(59,130,246,0.22);
+  border-radius:9px; color:#f0f4ff;
+  font-size:0.88rem; font-family:inherit; outline:none;
+  transition:border-color 0.25s, box-shadow 0.25s;
+}
+
+input:focus {
+  border-color:#3b82f6;
+  box-shadow:0 0 0 3px rgba(59,130,246,0.15);
+  background:rgba(59,130,246,0.07);
+}
+
+button {
+  width:100%; margin-top:18px; padding:12px;
+  background:linear-gradient(135deg,#3b82f6,#06b6d4);
+  border:none; border-radius:10px; color:#fff;
+  font-size:0.95rem; font-weight:700; cursor:pointer;
+  box-shadow:0 4px 18px rgba(59,130,246,0.35);
+  transition:opacity 0.2s, transform 0.2s;
+}
+button:hover { opacity:0.88; transform:translateY(-1px); }
+</style>
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+
+<!-- form action/method/names UNCHANGED -->
+<div class="container">
+  <div class="left-panel">
+    <div class="icon">📋</div>
+    <h1>Personal Data Submission</h1>
+    <p>Your data will be automatically detected and anonymized before being stored securely.</p>
+  </div>
+
+  <div class="right-panel">
+    <h2>Submit Data</h2>
+    <p class="sub">Fields are anonymized on save — no raw data is stored</p>
+
+    <form action="http://127.0.0.1:5000/submit-data" method="post">
+      <label>Full Name</label>
+      <input type="text" name="name" placeholder="e.g. Usha S P">
+
+      <label>Email Address</label>
+      <input type="email" name="email" placeholder="e.g. user@example.com">
+
+      <label>Phone Number</label>
+      <input type="text" name="phone" placeholder="10-digit number" maxlength="10" pattern="[0-9]{10}" required>
+
+      <label>Aadhaar Number</label>
+      <input type="text" name="aadhar" placeholder="12-digit Aadhaar" maxlength="12" pattern="[0-9]{12}" required>
+
+      <label>Address</label>
+      <input type="text" name="address" placeholder="e.g. Bangalore, Karnataka">
+
+      <button type="submit">Submit & Anonymize →</button>
+    </form>
+  </div>
+</div>
+
+<script>
+VANTA.NET({
+  el: "#vanta-bg",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.00,
+  scaleMobile: 1.00,
+  color: 0x3b82f6,
+  backgroundColor: 0x050d1a,
+  points: 10.00,
+  maxDistance: 22.00,
+  spacing: 18.00
+});
+</script>
+</body>
+</html>

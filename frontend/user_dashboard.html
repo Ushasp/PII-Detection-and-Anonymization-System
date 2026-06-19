@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Dashboard — PII Anonymization System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+#vanta-bg { position:fixed; inset:0; z-index:0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  background: #050d1a;
+}
+
+.sidebar {
+  z-index: 10;
+  width: 230px;
+  flex-shrink: 0;
+  background: rgba(5,13,30,0.92);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(59,130,246,0.18);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px 20px;
+  border-bottom: 1px solid rgba(59,130,246,0.15);
+  margin-bottom: 10px;
+}
+
+.sidebar-brand .b-icon { font-size:1.5rem; }
+.sidebar-brand .b-name { font-size:0.9rem; font-weight:700; color:#f0f4ff; }
+.sidebar-brand .b-sub  { font-size:0.68rem; color:#64748b; }
+
+.sidebar a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  color: #64748b; text-decoration: none;
+  font-size: 0.87rem; font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar a:hover, .sidebar a.active {
+  background: rgba(59,130,246,0.14);
+  color: #f0f4ff;
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(59,130,246,0.12);
+}
+
+.main {
+  flex: 1;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.topbar {
+  background: rgba(10,20,45,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 14px;
+  padding: 15px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.topbar h2 { color:#f0f4ff; font-size:1.1rem; font-weight:700; }
+
+.search-box input {
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(59,130,246,0.22);
+  border-radius: 20px;
+  color: #f0f4ff; font-size:0.84rem; outline:none;
+  width: 210px; transition:border-color 0.2s;
+}
+.search-box input:focus { border-color:#3b82f6; }
+.search-box input::placeholder { color:#475569; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.card {
+  background: rgba(10,20,45,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 14px;
+  padding: 22px;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(59,130,246,0.2);
+}
+
+.card h3 {
+  font-size:0.73rem; font-weight:600; color:#64748b;
+  text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;
+}
+
+.card h1 {
+  font-size:2.2rem; font-weight:700;
+  background: linear-gradient(135deg,#3b82f6,#06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.box {
+  background: rgba(10,20,45,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.box h3 { font-size:0.82rem; font-weight:600; color:#64748b; margin-bottom:14px; }
+
+.card, .box { display:block; }
+</style>
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <span class="b-icon">🔏</span>
+    <div>
+      <div class="b-name">PII System</div>
+      <div class="b-sub">User Panel</div>
+    </div>
+  </div>
+
+  <a href="#" class="active">📊 &nbsp;Dashboard</a>
+  <a href="/data-form">📋 &nbsp;Submit Data</a>
+  <a href="/text-form">✏️ &nbsp;Text Anonymization</a>
+  <a href="/how-it-works">❓ &nbsp;How It Works</a>
+  <a href="/about">ℹ️ &nbsp;About</a>
+
+  <div class="sidebar-foot">
+    <a href="/">⬅ &nbsp;Logout</a>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="topbar">
+    <h2>User Dashboard</h2>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="🔍 Search...">
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><h3>📁 My Records</h3><h1 id="records">0</h1></div>
+    <div class="card"><h3>📝 Text Submissions</h3><h1 id="texts">0</h1></div>
+    <div class="card"><h3>👥 Total Users</h3><h1 id="users">0</h1></div>
+  </div>
+
+  <!-- Bar chart — full width, no line chart -->
+  <div class="box">
+    <h3>📊 My Submissions</h3>
+    <canvas id="barChart" style="max-height:320px;"></canvas>
+  </div>
+
+</div>
+
+<script>
+
+fetch("/user-dashboard-stats")
+.then(res => res.json())
+.then(data => {
+    document.getElementById("records").innerText = data.records;
+    document.getElementById("texts").innerText   = data.texts;
+    document.getElementById("users").innerText   = data.users;
+
+    new Chart(document.getElementById("barChart"), {
+        type: 'bar',
+        data: {
+            labels: ["My Records","My Texts","Total Users"],
+            datasets: [{
+                label: "System Data Overview",
+                data: [data.records, data.texts, data.users],
+                backgroundColor: ["#ff4d79","#ff8c42","#9333ea"]
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { labels: { color: "#94a3b8" } }
+            },
+            scales: {
+                x: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(255,255,255,0.05)" } },
+                y: {
+                    ticks: { color: "#94a3b8", stepSize: 1, precision: 0 },
+                    grid: { color: "rgba(255,255,255,0.05)" },
+                    beginAtZero: true,
+                    suggestedMax: Math.max(data.records, data.texts, data.users) + 5
+                }
+            }
+        }
+    });
+});
+
+document.getElementById("search").addEventListener("keyup", function () {
+    let value = this.value.toLowerCase();
+    let items = document.querySelectorAll(".card, .box");
+    items.forEach(item => {
+        let text = item.innerText.toLowerCase();
+        if (text.includes(value)) {
+            item.style.display = "block";
+            item.style.border = "2px solid #ff4d79";
+        } else {
+            item.style.display = "none";
+            item.style.border = "none";
+        }
+    });
+});
+
+</script>
+
+<script>
+VANTA.NET({
+  el: "#vanta-bg",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.00,
+  scaleMobile: 1.00,
+  color: 0x3b82f6,
+  backgroundColor: 0x050d1a,
+  points: 10.00,
+  maxDistance: 22.00,
+  spacing: 18.00
+});
+</script>
+</body>
+</html>

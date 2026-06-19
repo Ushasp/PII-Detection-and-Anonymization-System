@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — PII Anonymization System</title>
+
+<!-- VANTA NET BACKGROUND -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+
+<style>
+/* ── Reset ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* ── Vanta canvas sits behind everything ── */
+#vanta-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #050d1a; /* fallback while vanta loads */
+}
+
+/* ── Glass card ── */
+.login-box {
+  position: relative;
+  z-index: 1;           /* above vanta canvas */
+  background: rgba(10, 20, 45, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 18px;
+  padding: 40px 36px;
+  width: 360px;
+  box-shadow: 0 0 40px rgba(59,130,246,0.2), 0 20px 60px rgba(0,0,0,0.5);
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(28px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Header ── */
+.login-box .logo { font-size:2.4rem; text-align:center; margin-bottom:6px; }
+
+.login-box h2 {
+  text-align: center;
+  color: #f0f4ff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.login-box .sub {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 26px;
+}
+
+/* ── Labels ── */
+label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+  margin-top: 14px;
+}
+
+/* ── Inputs ── */
+input, select {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 10px;
+  color: #f0f4ff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+input:focus, select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
+  background: rgba(59,130,246,0.08);
+}
+
+select option { background: #0a1428; color: #f0f4ff; }
+
+/* ── Button ── */
+button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 12px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 18px rgba(59,130,246,0.4);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+button:hover { opacity:0.88; transform:translateY(-1px); }
+button:active { transform:translateY(0); }
+
+/* ── Footer link ── */
+.foot {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.82rem;
+  color: #475569;
+}
+
+.foot a { color: #3b82f6; text-decoration: none; font-weight:600; }
+.foot a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- Vanta target -->
+<div id="vanta-bg"></div>
+
+<!-- ── Login card — form action/method/names UNCHANGED ── -->
+<div class="login-box">
+  <div class="logo">🔐</div>
+  <h2>PII Anonymization System</h2>
+  <p class="sub">Sign in to your account</p>
+
+  <form action="/login" method="POST">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+    <label for="role">Login As</label>
+    <select id="role" name="role">
+      <option value="user">👤  User</option>
+      <option value="admin">🛡️  Admin</option>
+    </select>
+
+    <button type="submit">Sign In →</button>
+  </form>
+
+  <div id="flash-msg" style="display:none;margin-top:14px;padding:10px 14px;border-radius:10px;font-size:0.83rem;text-align:center;"></div>
+
+  <p class="foot">New user? <a href="/register">Create an account</a></p>
+
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const flash  = document.getElementById("flash-msg");
+  if (params.get("error") === "invalid_admin") {
+    flash.style.display = "block";
+    flash.style.background = "rgba(239,68,68,0.13)";
+    flash.style.border = "1px solid rgba(239,68,68,0.3)";
+    flash.style.color = "#fca5a5";
+    flash.textContent = "❌ Invalid admin credentials.";
+  } else if (params.get("error") === "invalid_user") {
+    flash.style.display = "block";
+    flash.style.background = "rgba(239,68,68,0.13)";
+    flash.style.border = "1px solid rgba(239,68,68,0.3)";
+    flash.style.color = "#fca5a5";
+    flash.textContent = "❌ Invalid username or password.";
+  } else if (params.get("registered") === "1") {
+    flash.style.display = "block";
+    flash.style.background = "rgba(16,185,129,0.12)";
+    flash.style.border = "1px solid rgba(16,185,129,0.3)";
+    flash.style.color = "#6ee7b7";
+    flash.textContent = "✅ Account created! You can now sign in.";
+  }
+})();
+</script>
+</div>
+
+<!-- ── Vanta init ── -->
+<script>
+VANTA.NET({
+  el: "#vanta-bg",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.00,
+  scaleMobile: 1.00,
+  color: 0x3b82f6,
+  backgroundColor: 0x050d1a,
+  points: 10.00,
+  maxDistance: 22.00,
+  spacing: 18.00
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — PII Anonymization System</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+#vanta-bg { position:fixed; inset:0; z-index:0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #050d1a;
+  padding: 30px 20px;
+}
+.box {
+  position: relative;
+  z-index: 1;
+  background: rgba(8,16,40,0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(59,130,246,0.28);
+  border-radius: 20px;
+  padding: 38px 40px 34px;
+  width: min(420px, 96vw);
+  box-shadow: 0 0 60px rgba(59,130,246,0.18), 0 24px 60px rgba(0,0,0,0.6);
+  animation: fadeUp 0.6s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(28px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.logo-wrap {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.logo-wrap img {
+  width: 46px; height: 46px;
+  filter: drop-shadow(0 0 12px rgba(59,130,246,0.7));
+}
+.logo-wrap .shield {
+  font-size: 2.8rem;
+  filter: drop-shadow(0 0 14px rgba(220,38,38,0.8));
+  line-height: 1;
+}
+h2 {
+  text-align:center; color:#f0f4ff;
+  font-size:1.35rem; font-weight:700; margin-bottom:3px;
+}
+.sub { text-align:center; font-size:0.8rem; color:#64748b; margin-bottom:22px; }
+
+label {
+  display:block; font-size:0.71rem; font-weight:600;
+  color:#94a3b8; text-transform:uppercase;
+  letter-spacing:0.06em; margin-bottom:5px; margin-top:13px;
+}
+input {
+  width:100%; padding:11px 14px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(59,130,246,0.22);
+  border-radius:10px; color:#f0f4ff;
+  font-size:0.9rem; font-family:inherit; outline:none;
+  transition:border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+input::placeholder { color:#334155; }
+input:focus {
+  border-color:#3b82f6;
+  box-shadow:0 0 0 3px rgba(59,130,246,0.15);
+  background:rgba(59,130,246,0.07);
+}
+input.error { border-color:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,0.12); }
+
+.err-msg {
+  font-size:0.74rem; color:#f87171;
+  margin-top:4px; display:none;
+}
+
+button[type="submit"] {
+  width:100%; margin-top:20px; padding:12px;
+  background:linear-gradient(135deg,#3b82f6,#06b6d4);
+  border:none; border-radius:10px; color:#fff;
+  font-size:0.95rem; font-weight:700; cursor:pointer;
+  letter-spacing:0.04em;
+  box-shadow:0 4px 18px rgba(59,130,246,0.38);
+  transition:opacity 0.2s, transform 0.2s;
+}
+button[type="submit"]:hover { opacity:0.88; transform:translateY(-1px); }
+
+.foot { text-align:center; margin-top:16px; font-size:0.82rem; color:#475569; }
+.foot a { color:#3b82f6; text-decoration:none; font-weight:600; }
+.foot a:hover { text-decoration:underline; }
+
+.flash-error {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #fca5a5;
+  font-size: 0.83rem;
+  margin-bottom: 14px;
+  text-align: center;
+  display: none;
+}
+</style>
+</head>
+<body>
+<div id="vanta-bg"></div>
+
+<div class="box">
+  <div class="logo-wrap"><span class="shield">🛡️</span></div>
+  <h2>Create Account</h2>
+  <p class="sub">Register to use PII Anonymization</p>
+
+  <div class="flash-error" id="flash-error"></div>
+
+  <form action="/register-user" method="POST" id="regForm" novalidate>
+
+    <label for="full_name">Full Name</label>
+    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required autocomplete="name">
+    <div class="err-msg" id="err-full_name">Please enter your full name.</div>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Choose a username" required autocomplete="username">
+    <div class="err-msg" id="err-username">Username must be at least 3 characters.</div>
+
+    <label for="email">Email Address</label>
+    <input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email">
+    <div class="err-msg" id="err-email">Enter a valid email address.</div>
+
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" maxlength="10" pattern="[0-9]{10}" required autocomplete="tel">
+    <div class="err-msg" id="err-phone">Enter a valid 10-digit phone number.</div>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Create a strong password" required autocomplete="new-password">
+    <div class="err-msg" id="err-password">Password must be at least 6 characters.</div>
+
+    <label for="confirm_password">Confirm Password</label>
+    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required autocomplete="new-password">
+    <div class="err-msg" id="err-confirm_password">Passwords do not match.</div>
+
+    <button type="submit">Create Account →</button>
+  </form>
+
+  <p class="foot">Already have an account? <a href="/">Sign in</a></p>
+</div>
+
+<script>
+// Show server-side errors from URL params
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const flash  = document.getElementById("flash-error");
+  const msgs   = {
+    "missing_fields":    "❌ Please fill in all required fields.",
+    "password_mismatch": "❌ Passwords do not match.",
+    "weak_password":     "❌ Password must be at least 6 characters.",
+    "username_taken":    "❌ Username already taken. Please choose another."
+  };
+  const err = params.get("error");
+  if (err && msgs[err]) {
+    flash.style.display = "block";
+    flash.textContent   = msgs[err];
+  }
+})();
+</script>
+
+<script>
+// Client-side validation
+document.getElementById("regForm").addEventListener("submit", function(e) {
+  let valid = true;
+
+  function check(id, condition, msgId) {
+    const el = document.getElementById(id);
+    const msg = document.getElementById(msgId || "err-"+id);
+    if (!condition(el.value)) {
+      el.classList.add("error");
+      msg.style.display = "block";
+      valid = false;
+    } else {
+      el.classList.remove("error");
+      msg.style.display = "none";
+    }
+  }
+
+  check("full_name",       v => v.trim().length >= 2,          "err-full_name");
+  check("username",        v => v.trim().length >= 3,           "err-username");
+  check("email",           v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "err-email");
+  check("phone",           v => /^\d{10}$/.test(v),             "err-phone");
+  check("password",        v => v.length >= 6,                  "err-password");
+  check("confirm_password",v => v === document.getElementById("password").value, "err-confirm_password");
+
+  if (!valid) e.preventDefault();
+});
+
+// Clear error on input
+["full_name","username","email","phone","password","confirm_password"].forEach(id => {
+  document.getElementById(id).addEventListener("input", function() {
+    this.classList.remove("error");
+    const msg = document.getElementById("err-"+id);
+    if (msg) msg.style.display = "none";
+  });
+});
+</script>
+
+<script>
+VANTA.NET({
+  el: "#vanta-bg",
+  mouseControls: true, touchControls: true, gyroControls: false,
+  minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
+  color: 0x3b82f6, backgroundColor: 0x050d1a,
+  points: 10.00, maxDistance: 22.00, spacing: 18.00
+});
+</script>
+</body>
+</html>
